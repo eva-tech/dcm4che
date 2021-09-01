@@ -155,7 +155,9 @@ public class MultiframeExtractor {
         MultiFrameTrueColorSecondaryCaptureImageExtractor(UID.SecondaryCaptureImageStorage, false),
         XRayAngiographicImageExtractor(UID.XRayAngiographicImageStorage, false),
         XRayRadiofluoroscopicImageExtractor(UID.XRayRadiofluoroscopicImageStorage, false),
-        RTImageExtractor(UID.RTImageStorage, false);
+        RTImageExtractor(UID.RTImageStorage, false),
+    	GenericImageExtractor("Generic", false);
+    	
 
         private final String sfcuid;
         private final boolean enhanced;
@@ -185,6 +187,7 @@ public class MultiframeExtractor {
         impls.put(UID.XRayAngiographicImageStorage, Impl.XRayAngiographicImageExtractor);
         impls.put(UID.XRayRadiofluoroscopicImageStorage, Impl.XRayRadiofluoroscopicImageExtractor);
         impls.put(UID.RTImageStorage, Impl.RTImageExtractor);
+        impls.put("Generic", Impl.GenericImageExtractor);
     }
 
     private static final int[] EXCLUDE_TAGS = {
@@ -263,8 +266,9 @@ public class MultiframeExtractor {
     private static Impl implFor(String mfcuid) {
         Impl impl = impls.get(mfcuid);
         if (impl == null)
-            throw new IllegalArgumentException(
-                    "Unsupported SOP Class: " + mfcuid);
+        	impl = impls.get("Generic");
+//            throw new IllegalArgumentException(
+//                    "Unsupported SOP Class: " + mfcuid);
         return impl;
     }
 
