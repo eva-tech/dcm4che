@@ -159,12 +159,16 @@ public class MultiframeExtractor {
     	GenericImageExtractor("Generic", false);
     	
 
-        private final String sfcuid;
+        private String sfcuid;
         private final boolean enhanced;
 
         Impl(String sfcuid, boolean enhanced) {
             this.sfcuid = sfcuid;
             this.enhanced = enhanced;
+        }
+
+        void setSfCUID(String sfcuid){
+            this.sfcuid = sfcuid;
         }
 
         Attributes extract(MultiframeExtractor mfe, Attributes emf, int frame) {
@@ -267,8 +271,7 @@ public class MultiframeExtractor {
         Impl impl = impls.get(mfcuid);
         if (impl == null)
         	impl = impls.get("Generic");
-//            throw new IllegalArgumentException(
-//                    "Unsupported SOP Class: " + mfcuid);
+            impl.setSfCUID(mfcuid);
         return impl;
     }
 
@@ -375,7 +378,8 @@ public class MultiframeExtractor {
         return src.getInt(Tag.Rows, 0)
              * src.getInt(Tag.Columns, 0)
              * (src.getInt(Tag.BitsAllocated, 8) >> 3)
-             * src.getInt(Tag.NumberOfSamples, 1);
+             * src.getInt(Tag.NumberOfSamples, 1)
+             * src.getInt(Tag.SamplesPerPixel, 1);
     }
 
     private String createInstanceNumber(String mfinstno, int frame) {
