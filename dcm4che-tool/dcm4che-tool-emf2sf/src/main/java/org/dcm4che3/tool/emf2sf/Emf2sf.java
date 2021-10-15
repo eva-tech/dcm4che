@@ -93,6 +93,10 @@ public class Emf2sf {
     public void setInstanceNumberFormat(String instanceNumberFormat) {
         extractor.setInstanceNumberFormat(instanceNumberFormat);
     }
+
+    public void setSerieUIDSuffix(String suffix){
+        extractor.setSerieUIDSuffix(suffix);
+    }
     
     
     @SuppressWarnings("unchecked")
@@ -106,6 +110,10 @@ public class Emf2sf {
             main.setOutputDirectory(new File(cl.getOptionValue("out-dir", ".")));
             if (cl.hasOption("out-file"))
                 main.setOutputFileFormat(cl.getOptionValue("out-file"));
+            if (cl.hasOption("inst-no"))
+                main.setInstanceNumberFormat(cl.getOptionValue("inst-no"));
+            if (cl.hasOption("serie-suffix"))
+                main.setSerieUIDSuffix(cl.getOptionValue("serie-suffix"));
             long start = System.currentTimeMillis();
             int n = main.extract(new File(fname(cl.getArgList())));
             long end = System.currentTimeMillis();
@@ -199,6 +207,12 @@ public class Emf2sf {
                 .desc(rb.getString("frame"))
                 .build());
         opts.addOption(null, "not-chseries", false, rb.getString("not-chseries"));
+        opts.addOption(Option.builder()
+                .longOpt("serie-suffix")
+                .hasArg()
+                .argName("suffix")
+                .desc(rb.getString("serie-suffix"))
+                .build());
         opts.addOption(Option.builder()
                 .longOpt("inst-no")
                 .hasArg()

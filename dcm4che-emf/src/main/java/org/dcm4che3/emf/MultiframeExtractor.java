@@ -42,6 +42,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import javax.sound.sampled.SourceDataLine;
+
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.UID;
 import org.dcm4che3.data.Attributes;
@@ -207,6 +209,7 @@ public class MultiframeExtractor {
     private String instanceNumberFormat = "%s%04d";
     private UIDMapper uidMapper = new HashUIDMapper();
     private NumberOfFramesAccessor nofAccessor = new NumberOfFramesAccessor();
+    private String serieUIDSuffix = "";
 
     public static boolean isSupportedSOPClass(String cuid) {
         return impls.containsKey(cuid);
@@ -226,12 +229,19 @@ public class MultiframeExtractor {
         this.preserveSeriesInstanceUID = preserveSeriesInstanceUID;
     }
 
+    public final void setSerieUIDSuffix(String suffix){
+        this.serieUIDSuffix = "." + suffix;
+    }
+
+    public final String getSerieUIDSuffix(){
+        return this.serieUIDSuffix;
+    }
+
     public final String getInstanceNumberFormat() {
         return instanceNumberFormat;
     }
 
     public final void setInstanceNumberFormat(String instanceNumberFormat) {
-        String.format(instanceNumberFormat, "1", 1);
         this.instanceNumberFormat = instanceNumberFormat;
     }
 
@@ -301,6 +311,11 @@ public class MultiframeExtractor {
         if (!preserveSeriesInstanceUID)
             dest.setString(Tag.SeriesInstanceUID, VR.UI, uidMapper.get(
                     dest.getString(Tag.SeriesInstanceUID)));
+        dest.setString(
+            Tag.SeriesInstanceUID,
+            VR.UI,
+            dest.getString(Tag.SeriesInstanceUID) + serieUIDSuffix
+        );
         adjustReferencedImages(dest, Tag.ReferencedImageSequence);
         adjustReferencedImages(dest, Tag.SourceImageSequence);
         return dest;
@@ -383,7 +398,25 @@ public class MultiframeExtractor {
     }
 
     private String createInstanceNumber(String mfinstno, int frame) {
-        String s = String.format(instanceNumberFormat, mfinstno, frame + 1);
+        int possition = instanceNumberFormat.indexOf("%s");
+        String text = "";
+        String number = "";
+        if (possition >= 0){
+            text = instanceNumberFormat.substring(0, possition+2);
+            if(possition + 2 < instanceNumberFormat.length()) {
+                number = instanceNumberFormat.substring(possition+2, instanceNumberFormat.length());
+            }
+        }
+        else {
+            number = instanceNumberFormat;
+        }
+        if(!text.isEmpty()){
+            text = String.format(text, mfinstno);
+        }
+        if(!number.isEmpty()){
+            number = String.format(number, frame + 1);
+        }
+        String s = text + number;
         return s.length() > 16 ? s.substring(s.length() - 16) : s;
     }
 

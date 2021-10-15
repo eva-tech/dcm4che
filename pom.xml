@@ -134,6 +134,9 @@
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.0.0-M3</version>
+          <configuration>
+            <skipTests>true</skipTests>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-dependency-plugin</artifactId>
