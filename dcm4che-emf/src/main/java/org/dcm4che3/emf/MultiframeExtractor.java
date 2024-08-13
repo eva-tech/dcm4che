@@ -158,6 +158,7 @@ public class MultiframeExtractor {
         XRayAngiographicImageExtractor(UID.XRayAngiographicImageStorage, false),
         XRayRadiofluoroscopicImageExtractor(UID.XRayRadiofluoroscopicImageStorage, false),
         RTImageExtractor(UID.RTImageStorage, false),
+        BreastTomosynthesisImageExtractor(UID.BreastTomosynthesisImageStorage, true),
     	GenericImageExtractor("Generic", false);
     	
 
@@ -193,6 +194,7 @@ public class MultiframeExtractor {
         impls.put(UID.XRayAngiographicImageStorage, Impl.XRayAngiographicImageExtractor);
         impls.put(UID.XRayRadiofluoroscopicImageStorage, Impl.XRayRadiofluoroscopicImageExtractor);
         impls.put(UID.RTImageStorage, Impl.RTImageExtractor);
+        impls.put(UID.BreastTomosynthesisImageStorage, Impl.BreastTomosynthesisImageExtractor);
         impls.put("Generic", Impl.GenericImageExtractor);
     }
 
